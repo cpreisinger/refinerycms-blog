@@ -3,8 +3,6 @@ module Refinery
     module Admin
       class PostsController < ::Refinery::AdminController
 
-        cache_sweeper Refinery::BlogSweeper
-
         crudify :'refinery/blog/post',
                 :order => 'published_at DESC',
                 :include => [:translations]
@@ -83,7 +81,7 @@ module Refinery
         end
 
         def find_all_categories
-          @categories = Refinery::Blog::Category.find(:all)
+          @categories = Refinery::Blog::Category.all
         end
 
         def check_category_ids

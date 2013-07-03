@@ -53,6 +53,11 @@ Or just with rake spec
 
     $ bundle exec rake spec
 
+## Additional Features
+* To limit rss feed length, use the 'max_results' parameter
+
+        http://test.host/blog/feed.rss?max_results=10
+
 ## More Information
 * Check out our [Website](http://refinerycms.com/)
 * Documentation is available in the [guides](http://refinerycms.com/guides)

@@ -35,9 +35,7 @@ en:
             approve: Approve this comment
         posts:
           form:
-            advanced_options: Advanced Options
             toggle_advanced_options: Click to access meta tag settings and menu options
-            save_as_draft: Save as Draft
             published_at: Publish Date
             custom_url: Custom Url
             custom_url_help: Generate the url for the blog post from this text instead of the title.
@@ -97,6 +95,10 @@ en:
           from: From
           email: Email
           message: Message
+          approve: Approve
+          or: " or "
+          reject: reject
+          this_comment: " this comment."
           closing_line: Kind Regards
           ps: 'P.S. All your comments are stored in the "Blog" section of Refinery under the "Comments" submenu should you ever want to view it there later.'
       shared:
@@ -106,7 +108,7 @@ en:
           title: RSS Feed
           subscribe: Subscribe
         posts:
-          other: Other Posts
+          other: Latest Posts
           created_at: 'Posted on %{when}'
           read_more: Read more
         comments:
@@ -134,7 +136,7 @@ en:
           comments:
             title: Comments
             add: Make a Comment
-          other: Other Blog Posts
+          other: Latest Blog Posts
           filed_in: Filed in
           tagged: Tagged
           submit: Send comment
@@ -151,17 +153,17 @@ en:
           no_blog_articles_posted: 'There are no blog articles posted for %{date}. Stay tuned.'
   activerecord:
     models:
-      refinery/blog_category: Category
-      refinery/blog_comment: Comment
-      refinery/blog_post: Blog post
+      refinery/blog/category: Category
+      refinery/blog/comment: Comment
+      refinery/blog/post: Blog post
     attributes:
-      refinery/blog_category:
+      refinery/blog/category:
         title: Title
-      refinery/blog_comment:
+      refinery/blog/comment:
         name: Name
         email: Email
         message: Message
-      refinery/blog_post:
+      refinery/blog/post:
         title: Title
         body: Body
         teaser: Teaser

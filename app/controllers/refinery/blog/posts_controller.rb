@@ -2,8 +2,6 @@ module Refinery
   module Blog
     class PostsController < BlogController
 
-      caches_page :index, :unless => proc {|c| c.refinery_user_signed_in? || c.flash.any? || params[:page].present? }
-
       before_filter :find_all_blog_posts, :except => [:archive]
       before_filter :find_blog_post, :only => [:show, :comment, :update_nav]
       before_filter :find_tags
@@ -11,8 +9,11 @@ module Refinery
       respond_to :html, :js, :rss
 
       def index
-        # Rss feeders are greedy. Let's give them every blog post instead of paginating.
-        (@posts = Post.live.includes(:comments, :categories).with_globalize) if request.format.rss?
+        if request.format.rss?
+          @posts = Post.live.includes(:comments, :categories)
+          # limit rss feed for services (like feedburner) who have max size
+          @posts = Post.recent(params["max_results"]) if params["max_results"].present?
+        end
         respond_with (@posts) do |format|
           format.html
           format.rss { render :layout => false }
@@ -58,14 +59,14 @@ module Refinery
       def archive
         if params[:month].present?
           date = "#{params[:month]}/#{params[:year]}"
-          @archive_date = Time.parse(date)
-          @date_title = @archive_date.strftime('%B %Y')
-          @posts = Post.live.by_month(@archive_date).page(params[:page])
+          archive_date = Time.parse(date)
+          @date_title = ::I18n.l(archive_date, :format => '%B %Y')
+          @posts = Post.live.by_month(archive_date).page(params[:page])
         else
           date = "01/#{params[:year]}"
-          @archive_date = Time.parse(date)
-          @date_title = @archive_date.strftime('%Y')
-          @posts = Post.live.by_year(@archive_date).page(params[:page])
+          archive_date = Time.parse(date)
+          @date_title = ::I18n.l(archive_date, :format => '%Y')
+          @posts = Post.live.by_year(archive_date).page(params[:page])
         end
         respond_with (@posts)
       end
@@ -73,12 +74,12 @@ module Refinery
       def tagged
         @tag = ActsAsTaggableOn::Tag.find(params[:tag_id])
         @tag_name = @tag.name
-        @posts = Post.tagged_with(@tag_name).page(params[:page])
+        @posts = Post.live.tagged_with(@tag_name).page(params[:page])
       end
 
     protected
       def canonical?
-        ::Refinery.i18n_enabled? && ::Refinery::I18n.default_frontend_locale != ::Refinery::I18n.current_frontend_locale
+        Refinery::I18n.default_frontend_locale != Refinery::I18n.current_frontend_locale
       end
     end
   end

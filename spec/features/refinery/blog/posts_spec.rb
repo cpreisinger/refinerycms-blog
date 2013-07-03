@@ -5,7 +5,9 @@ module Refinery
     refinery_login_with :refinery_user
 
     context "when has blog posts" do
-      let!(:blog_post) { FactoryGirl.create(:blog_post, :title => "Refinery CMS blog post") }
+      let!(:blog_post) do
+        Globalize.with_locale(:en) { FactoryGirl.create(:blog_post, :title => "Refinery CMS blog post") }
+      end
 
       it "should display blog post" do
         visit refinery.blog_post_path(blog_post)
@@ -13,18 +15,11 @@ module Refinery
         page.should have_content(blog_post.title)
       end
 
-      it "should display the blog rss feed" do
-        get refinery.blog_rss_feed_path
-
-        response.should be_success
-        response.content_type.should eq("application/rss+xml")
-      end
-
       describe "visit blog" do
 
-        before(:each) do
-          Factory.create(:page, :link_url => "/")
-          Factory.create(:page, :link_url => "/blog", :title => "Blog")
+        before do
+          FactoryGirl.create(:page, :link_url => "/")
+          FactoryGirl.create(:page, :link_url => "/blog", :title => "Blog")
         end
 
         it "shows blog link in menu" do
@@ -46,7 +41,7 @@ module Refinery
 
     describe "list tagged posts" do
       context "when has tagged blog posts" do
-        before(:each) do
+        before do
           @tag_name = "chicago"
           @post = FactoryGirl.create(:blog_post,
                                           :title => "I Love my city",
@@ -102,7 +97,7 @@ module Refinery
       end
 
       context "when posting comments" do
-        let(:blog_post) { Factory(:blog_post) }
+        let(:blog_post) { FactoryGirl.create(:blog_post) }
         let(:name) { "pete" }
         let(:email) { "pete@mcawesome.com" }
         let(:body) { "Witty comment." }
@@ -157,7 +152,7 @@ module Refinery
 
     describe "#show draft preview" do
       let(:blog_post) { FactoryGirl.create(:blog_post_draft) }
-      
+
       context "when logged in as admin" do
         it "should display the draft notification" do
           visit refinery.blog_post_path(blog_post)
@@ -165,16 +160,19 @@ module Refinery
           page.should have_content('This page is NOT live for public viewing.')
         end
       end
-     
+
       context "when not logged in as an admin" do
-        before do 
+        before do
+          # TODO: remove Refinery::Pages::Engine.load_seed dependency.
+          # It's here to temporary fix the issue with 404 after visiting logout path.
+          Refinery::Pages::Engine.load_seed
           visit refinery.logout_path
         end
 
         it "should not display the blog post" do
           visit refinery.blog_post_path(blog_post)
 
-          page.should have_content("The page you were looking for doesn't exist (404)")
+          page.should have_content("The page you requested was not found.")
         end
       end
     end

@@ -35,9 +35,7 @@ ja:
             approve: このコメントを承認する
         posts:
           form:
-            advanced_options: 詳細オプション
             toggle_advanced_options: メタタグの設定メニューをアクセスするにはここをクリックして下さい
-            save_as_draft: 下書きとして保存
             published_at: 公開時刻
             custom_url: カスタムURL
             custom_url_help: 投稿のURLをここのテキストとして登録する。
@@ -142,17 +140,17 @@ ja:
           no_blog_articles_posted: '%{date}付のブログ記事が投稿されてません。'
   activerecord:
     models:
-      refinery/blog_category: カテゴリ
-      refinery/blog_comment: コメント
-      refinery/blog_post: 投稿
+      refinery/blog/category: カテゴリ
+      refinery/blog/comment: コメント
+      refinery/blog/post: 投稿
     attributes:
-      refinery/blog_category:
+      refinery/blog/category:
         title: 題名
-      refinery/blog_comment:
+      refinery/blog/comment:
         name: 名前
         email: メール
         message: メッセージ
-      refinery/blog_post:
+      refinery/blog/post:
         title: 題名
         body: 本文
         teaser: 短紹介文

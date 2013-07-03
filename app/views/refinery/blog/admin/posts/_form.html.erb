@@ -3,29 +3,22 @@
              :object => f.object,
              :include_object_name => true %>
 
-  <%= render "/refinery/blog/admin/shared/locale_picker",
-              :current_locale => Thread.current[:globalize_locale] if Refinery.i18n_enabled? %>
+  <%= render '/refinery/admin/locale_picker',
+              :current_locale => Globalize.locale %>
 
   <div class='field'>
     <%= f.label :title -%>
     <%= f.text_field :title, :class => 'larger widest' -%>
-  </div>
-  
-  <div class="field">
-    <p>
-      <%= f.check_box :draft %>
-      <%= f.label :draft, t('.save_as_draft'), :class => "stripped" %>
-    </p>
   </div>
 
   <div class='field'>
     <div id='page-tabs' class='clearfix ui-tabs ui-widget ui-widget-content ui-corner-all'>
       <ul id='page_parts'>
         <li class='ui-state-default ui-state-active'>
-          <%= link_to t('body', :scope => 'activerecord.attributes.refinery/blog_post'), "#page_part_body" %>
+          <%= link_to t('body', :scope => 'activerecord.attributes.refinery/blog/post'), "#page_part_body" %>
         </li>
         <li class='ui-state-default'>
-          <%= link_to t('teaser', :scope => 'activerecord.attributes.refinery/blog_post'), "#page_part_teaser" %>
+          <%= link_to t('teaser', :scope => 'activerecord.attributes.refinery/blog/post'), "#page_part_teaser" %>
         </li>
         <% Refinery::Blog.tabs.each_with_index do |tab, tab_index| %>
           <li class='ui-state-default' id="custom_<%= tab.name %>_tab">
@@ -47,18 +40,13 @@
     </div>
   </div>
 
+  <%= render '/refinery/admin/form_advanced_options_menu', :f => f %>
+
   <div class='field'>
     <%= f.label :tag_list, t('refinery.blog.shared.tags.title') -%>
     <%= f.text_field :tag_list, :class => 'larger' -%>
   </div>
 
-  <div id='more_options_field'>
-    <p>
-      <%= link_to t('.advanced_options'), "#",
-                  :id => 'toggle_advanced_options',
-                  :title => t('.toggle_advanced_options') %>
-    </p>
-  </div>
   <div id='more_options' style="display:none;">
     <div class="hemisquare">
       <h3><%= t('title', :scope => 'refinery.blog.admin.submenu.categories') %></h3>
@@ -106,7 +94,7 @@
           <%= f.label :user_id, t('.author') %>
           <%= refinery_help_tag t('.author_help') %>
           <br/>
-          <%= f.collection_select :user_id, ::Refinery::User.all, :id, :username %>
+          <%= f.collection_select :user_id, Refinery::Blog.user_class.all, :id, :username %>
         </span>
       </div>
 
