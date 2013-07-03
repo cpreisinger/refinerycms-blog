@@ -14,7 +14,7 @@ module Refinery
 
       default_scope :order => 'published_at DESC'
 
-      belongs_to :author, :class_name => 'Refinery::User', :foreign_key => :user_id, :readonly => true
+      belongs_to :author, :class_name => Refinery::Blog.user_class.to_s, :foreign_key => :user_id, :readonly => true
 
       has_many :comments, :dependent => :destroy, :foreign_key => :blog_post_id
       acts_as_taggable
@@ -26,6 +26,7 @@ module Refinery
 
       validates :title, :presence => true, :uniqueness => true
       validates :body,  :presence => true
+      validates :published_at, :author, :presence => true
 
       validates :source_url, :url => { :if => 'Refinery::Blog.validate_source_url',
                                       :update => true,
@@ -34,15 +35,21 @@ module Refinery
                                       :verify => [:resolve_redirects]}
 
       attr_accessible :title, :body, :custom_teaser, :tag_list, :draft, :published_at, :custom_url, :author
-      attr_accessible :browser_title, :meta_keywords, :meta_description, :user_id, :category_ids
+      attr_accessible :browser_title, :meta_description, :user_id, :category_ids
       attr_accessible :source_url, :source_url_title
       attr_accessor :locale
 
 
     class Translation
       is_seo_meta
-      attr_accessible :browser_title, :meta_description, :meta_keywords, :locale
+      attr_accessible :browser_title, :meta_description, :locale
     end
+
+      # Delegate SEO Attributes to globalize3 translation
+      seo_fields = ::SeoMeta.attributes.keys.map{|a| [a, :"#{a}="]}.flatten
+      delegate(*(seo_fields << {:to => :translation}))
+
+      before_save { |m| m.translation.save }
 
       self.per_page = Refinery::Blog.posts_per_page
 
@@ -86,7 +93,7 @@ module Refinery
         end
 
         def by_month(date)
-          where(:published_at => date.beginning_of_month..date.end_of_month).with_globalize
+          where(:published_at => date.beginning_of_month..date.end_of_month)
         end
 
         def by_archive(date)
@@ -99,11 +106,11 @@ module Refinery
         end
 
         def published_dates_older_than(date)
-          published_before(date).with_globalize.pluck(:published_at)
+          published_before(date).pluck(:published_at)
         end
 
         def recent(count)
-          live.limit(count).with_globalize
+          live.limit(count)
         end
 
         def popular(count)
@@ -111,15 +118,15 @@ module Refinery
         end
 
         def previous(item)
-          published_before(item.published_at).with_globalize.first
+          published_before(item.published_at).first
         end
 
         def uncategorized
-          live.includes(:categories).where(Refinery::Categorization.table_name => { :blog_category_id => nil }).with_globalize
+          live.includes(:categories).where(Refinery::Blog::Categorization.table_name => { :blog_category_id => nil })
         end
 
         def next(current_record)
-          where(["published_at > ? and draft = ?", current_record.published_at, false]).with_globalize.first
+          where(["published_at > ? and draft = ?", current_record.published_at, false]).reorder('published_at ASC').with_globalize.first
         end
 
         def published_before(date=Time.now)

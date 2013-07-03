@@ -35,9 +35,7 @@ sk:
             approve: Schváliť komentár
         posts:
           form:
-            advanced_options: Pokročilé nastavenia
             toggle_advanced_options: Klikni pre prístup k nastaveniam meta tagov a menu
-            save_as_draft: Uložiť ako koncept
             published_at: Dátum publikovania
             custom_url: Vlastná url
             custom_url_help: Generovať url pre blog článok z tohto textu namiesto názvu blog článku.
@@ -52,7 +50,7 @@ sk:
           index:
             no_items_yet: 'Nie sú žiadne blog články. Klikni na "%{create}" pre pridanie prvého.'
           uncategorized:
-            no_items_yet: 'Nie sú žiadne nezradené články.'
+            no_items_yet: 'Nie sú žiadne nezaradené články.'
           post:
             view_live_html: 'Zobraziť živý náhľad článku<br/><em>(otvorí sa v novom okne)</em>'
             edit: Upraviť článok
@@ -126,7 +124,7 @@ sk:
         comment: komentár
         comments:
           by: 'Odoslal %{who}'
-          time_ago: '%{time} spáť'
+          time_ago: 'pred %{time}'
           thank_you: 'Vďaka za komentár.'
           thank_you_moderated: 'Ďakujeme za Váš komentár. Vaša správa čaká na schválenie a čoskoro sa objaví.'
         index:
@@ -152,17 +150,17 @@ sk:
           no_blog_articles_posted: 'Nie sú žiadne články publikované %{date}. Zostaňte naladení.'
   activerecord:
       models:
-        refinery/blog_category: Kategória
-        refinery/blog_comment: Komentár
-        refinery/blog_post: Blog článok
+        refinery/blog/category: Kategória
+        refinery/blog/comment: Komentár
+        refinery/blog/post: Blog článok
       attributes:
-        refinery/blog_category:
+        refinery/blog/category:
           title: Názov
-        refinery/blog_comment:
+        refinery/blog/comment:
           name: Meno
           email: E-mail
           message: Správa
-        refinery/blog_post:
+        refinery/blog/post:
           title: Názov
           body: Text
           teaser: Teaser

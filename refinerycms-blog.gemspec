@@ -1,6 +1,5 @@
 # Encoding: UTF-8
-$:.push File.expand_path('../lib', __FILE__)
-require 'refinery/blog/version'
+require File.expand_path('../lib/refinery/blog/version', __FILE__)
 
 version = Refinery::Blog::Version.to_s
 
@@ -22,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency    'refinerycms-settings', '~> 2.1.0.dev'
   s.add_dependency    'filters_spam',         '~> 0.2'
   s.add_dependency    'acts-as-taggable-on'
-  s.add_dependency    'seo_meta',             '~> 1.3.0'
+  s.add_dependency    'seo_meta',             '~> 1.4.0'
   s.add_dependency    'rails_autolink',       '~> 1.0.7'
+  s.add_dependency    'friendly_id',          '~> 4.0.4'
 end
